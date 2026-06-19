@@ -1,0 +1,33 @@
+services:
+  opencode:
+    build: .
+    command: ["web", "--hostname", "0.0.0.0", "--port", "4096"]
+    environment:
+      OPENCODE_SERVER_PASSWORD: ${OPENCODE_SERVER_PASSWORD}
+    volumes:
+      - opencode-data:/root/.local/share/opencode
+      - opencode-cache:/root/.cache/opencode
+      - ./opencode.json:/root/.config/opencode/opencode.json:ro
+      - ./projects:/projects
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2.11.4-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - opencode
+    restart: unless-stopped
+
+volumes:
+  opencode-data:
+  opencode-cache:
+  caddy-data:
+  caddy-config:
