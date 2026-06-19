@@ -1,0 +1,14 @@
+{$DOMAIN} {
+	reverse_proxy opencode:4096 {
+		transport http {
+			read_timeout 600s
+			write_timeout 600s
+			dial_timeout 30s
+		}
+		flush_interval -1
+	}
+	log {
+		output stdout
+		format json
+	}
+}

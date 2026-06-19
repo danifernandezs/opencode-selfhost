@@ -1,0 +1,27 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "your-provider": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "your-provider",
+      "options": {
+        "baseURL": "https://your-litellm-endpoint.com/v1",
+        "apiKey": "YOUR_API_KEY"
+      },
+      "models": {
+        "your-model": {
+          "id": "your-model",
+          "name": "your-model",
+          "cost": {
+            "input": 1.0,
+            "output": 2.0
+          },
+          "limit": {
+            "context": 128000,
+            "output": 8192
+          }
+        }
+      }
+    }
+  }
+}
