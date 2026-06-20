@@ -1,5 +1,6 @@
 services:
   opencode:
+    image: ghcr.io/danifernandezs/opencode-selfhost:latest
     build: .
     command: ["web", "--hostname", "0.0.0.0", "--port", "4096"]
     environment:
