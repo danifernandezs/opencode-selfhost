@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)" />
+  <title>opencode-selfhost — Self-hosted OpenCode server</title>
+  <meta name="description" content="Self-hosted OpenCode server in Docker behind a Caddy reverse proxy with automatic HTTPS." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://www.danifernandezs.com/opencode-selfhost/" />
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --link: #7c3aed;
+      --max: 920px;
+      --radius: 14px;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --bgGlow1: rgba(139, 92, 246, .20);
+      --bgGlow2: rgba(192, 132, 252, .20);
+      --pillHoverBg: rgba(139, 92, 246, .15);
+      --pillHoverBorder: rgba(139, 92, 246, .40);
+      --cardBg: rgba(255,255,255,.55);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --fg: #e5e7eb;
+        --muted: #a1a1aa;
+        --border: rgba(255,255,255,.12);
+        --link: #a78bfa;
+        --bgGlow1: rgba(167, 139, 250, .25);
+        --bgGlow2: rgba(139, 92, 246, .20);
+        --pillHoverBg: rgba(167, 139, 250, .15);
+        --pillHoverBorder: rgba(167, 139, 250, .40);
+        --cardBg: rgba(255,255,255,.04);
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      background:
+        radial-gradient(900px 420px at 18% -10%, var(--bgGlow1), transparent 60%),
+        radial-gradient(900px 420px at 85% 10%, var(--bgGlow2), transparent 55%),
+        var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+    }
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 44px 18px 64px; }
+    .hero { text-align: center; padding: 26px 10px 22px; }
+    h1 { margin: 0 0 10px; font-size: clamp(28px, 4vw, 42px); letter-spacing: -0.02em; }
+    .headline { margin: 0 auto; max-width: 64ch; color: var(--muted); font-size: 15.5px; }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-top: 18px;
+      background: var(--cardBg);
+    }
+    .section-title {
+      margin: 0 0 10px;
+      font-size: 14.5px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: center; }
+    .pill {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      background: rgba(255,255,255,.35);
+      transition: background .14s ease, border-color .14s ease, color .14s ease, transform .14s ease;
+    }
+    @media (prefers-color-scheme: dark) { .pill { background: rgba(255,255,255,.03); } }
+    .pill:hover { background: var(--pillHoverBg); border-color: var(--pillHoverBorder); color: var(--fg); transform: translateY(-1px); }
+    .btn {
+      display: inline-block;
+      border: 1px solid var(--link);
+      border-radius: 999px;
+      padding: 12px 28px;
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 650;
+      color: var(--link);
+      text-decoration: none;
+      transition: background .14s ease, color .14s ease, transform .14s ease;
+    }
+    .btn:hover { background: var(--link); color: var(--bg); text-decoration: none; transform: translateY(-1px); }
+    pre {
+      background: rgba(0,0,0,.06);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    @media (prefers-color-scheme: dark) { pre { background: rgba(255,255,255,.04); } }
+    code { font-family: var(--mono); font-size: 13px; }
+    footer { margin-top: 22px; text-align: center; color: var(--muted); font-size: 12px; }
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    ul { margin: 10px 0 0; padding-left: 18px; }
+    ul li { margin-bottom: 6px; }
+  </style>
+</head>
+
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>opencode-selfhost</h1>
+      <p class="headline">
+        Self-hosted <strong>OpenCode</strong> server in Docker behind a Caddy reverse proxy with automatic HTTPS.
+        Only the API endpoints required by <code>opencode attach</code> are exposed.
+      </p>
+    </section>
+
+    <section class="card" aria-label="Stack">
+      <div class="row">
+        <span class="pill">Docker</span>
+        <span class="pill">Caddy</span>
+        <span class="pill">OpenCode</span>
+        <span class="pill">HTTPS</span>
+        <span class="pill">Watchtower</span>
+      </div>
+    </section>
+
+    <section class="card" aria-label="Quick start">
+      <p class="section-title">Quick start</p>
+      <pre><code>git clone https://github.com/danifernandezs/opencode-selfhost.git
+cd opencode-selfhost
+
+cp .env.example .env
+cp opencode.json.example opencode.json
+
+# Edit .env and opencode.json with your config
+docker compose up -d</code></pre>
+    </section>
+
+    <section class="card" aria-label="Connect">
+      <p class="section-title">Connect from any machine</p>
+      <pre><code>opencode attach https://oc.yourdomain.com \
+  --password your-server-password \
+  --dir /projects/my-project</code></pre>
+    </section>
+
+    <section class="card" aria-label="Features">
+      <p class="section-title">Features</p>
+      <ul>
+        <li>Automatic TLS via Let's Encrypt (Caddy)</li>
+        <li>API-only exposure — web UI blocked by default</li>
+        <li>Multi-arch Docker image (amd64 + arm64)</li>
+        <li>Auto-updates via Watchtower</li>
+        <li>Data persistence across rebuilds</li>
+      </ul>
+    </section>
+
+    <section class="hero" style="padding-top: 30px;">
+      <a class="btn" href="https://github.com/danifernandezs/opencode-selfhost" target="_blank" rel="noopener">
+        View on GitHub &rarr;
+      </a>
+    </section>
+
+    <footer>
+      &copy; <span id="y"></span> Daniel Fernández Santos · <a href="https://github.com/danifernandezs/opencode-selfhost/blob/main/LICENSE.txt">CC BY-SA 4.0</a>
+    </footer>
+  </main>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

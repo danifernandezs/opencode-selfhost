@@ -2,6 +2,9 @@
 
 > Self-hosted OpenCode server in Docker behind a Caddy reverse proxy with automatic HTTPS.
 
+Website: https://www.danifernandezs.com/opencode-selfhost/
+Repository: https://github.com/danifernandezs/opencode-selfhost
+
 ## What it does
 
 Runs [OpenCode](https://opencode.ai) as a remote server inside Docker, behind a Caddy reverse proxy that provides automatic TLS via Let's Encrypt. Only the API endpoints required by `opencode attach` are exposed — the web UI and all other endpoints are blocked.
