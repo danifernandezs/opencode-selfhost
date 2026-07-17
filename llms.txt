@@ -1,0 +1,35 @@
+# opencode-selfhost
+
+> Self-hosted OpenCode server in Docker behind a Caddy reverse proxy with automatic HTTPS.
+
+## What it does
+
+Runs [OpenCode](https://opencode.ai) as a remote server inside Docker, behind a Caddy reverse proxy that provides automatic TLS via Let's Encrypt. Only the API endpoints required by `opencode attach` are exposed — the web UI and all other endpoints are blocked.
+
+## Architecture
+
+- **OpenCode** (port 4096, localhost only) — holds sessions, projects, tools, and the LLM config
+- **Caddy** (ports 80/443) — terminates TLS, whitelists API endpoints, proxies to OpenCode
+- **Watchtower** — auto-updates the Docker image every hour
+
+## Key files
+
+- `Dockerfile` — based on the official OpenCode image, adds git, jq, curl. Runs as root so the agent can install packages at runtime
+- `compose.yaml` — orchestrates OpenCode + Caddy + Watchtower with volumes for data persistence
+- `Caddyfile` — reverse proxy config with API endpoint whitelist and 600s timeouts
+- `.env.example` — template for DOMAIN and OPENCODE_SERVER_PASSWORD
+- `opencode.json.example` — template for LLM provider configuration (OpenAI-compatible)
+
+## Usage
+
+Connect from any machine with OpenCode installed:
+
+```bash
+opencode attach https://oc.yourdomain.com \
+  --password your-server-password \
+  --dir /projects/my-project
+```
+
+## License
+
+CC BY-SA 4.0

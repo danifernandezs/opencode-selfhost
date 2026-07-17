@@ -29,10 +29,35 @@ The server holds your sessions, projects, and tools. You connect to it remotely,
 
 ## Quick start
 
-1. **Clone and configure**
-2. **Configure your LLM provider**
-3. **Point your domain to the VPS** (A record)
-4. **Start the services**
+1. **Clone the repo**
+
+   ```bash
+   git clone https://github.com/danifernandezs/opencode-selfhost.git
+   cd opencode-selfhost
+   ```
+
+2. **Copy and edit the environment file**
+
+   ```bash
+   cp .env.example .env
+   # Edit .env: set DOMAIN and OPENCODE_SERVER_PASSWORD
+   # Generate a password: openssl rand -base64 32
+   ```
+
+3. **Copy and edit the LLM config**
+
+   ```bash
+   cp opencode.json.example opencode.json
+   # Edit opencode.json: set your provider, API key, and models
+   ```
+
+4. **Point your domain to the VPS** (A record to your VPS IP)
+
+5. **Start the services**
+
+   ```bash
+   docker compose up -d
+   ```
 
 ## Usage
 
@@ -71,6 +96,6 @@ See [`opencode.json.example`](opencode.json.example) for the template. Configure
 
 > **Never** run `docker compose down -v` — the `-v` flag destroys volumes and all session history.
 
-## Repository license
+## License
 
-[CC BY-SA 4.0](LICENSE.txt)
+This project is licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) — see [`LICENSE.txt`](LICENSE.txt) for details.
