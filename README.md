@@ -1,5 +1,7 @@
 # opencode-selfhost
 
+> Repository: [github.com/danifernandezs/opencode-selfhost](https://github.com/danifernandezs/opencode-selfhost)
+
 Self-hosted [OpenCode](https://opencode.ai) server running in Docker behind a Caddy reverse proxy with automatic HTTPS. Connect from any machine via TUI (`opencode attach`). Only the API endpoints required by the TUI are exposed, the web UI and all other endpoints are blocked.
 
 ## How it works
